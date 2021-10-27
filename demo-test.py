@@ -39,9 +39,28 @@ histyAxisLimitDict={
     "TYF" : [0, 12]
 }
 
-appTitle = "1QBit CME Market Sentiment Meter Demo"
+appTitle = "1QBit CME Market Sentiment Meter"
 
 st.title(appTitle)
+
+st.write(
+        """
+        ### Demo Information
+        Data-driven thinking is becoming increasingly important, and thus prevalent, in finance.
+        Students need to know how to collect, clean, and work with data whether they want to develop
+        trading algorithms, analyze client information, and beyond.
+        
+        One indispensable skill that is generally not covered in courses (yet), is being able to deploy
+        one's work on a cloud platform. There are many cloud providers like Streamlit, Azure, AWS, and more
+        that allow the deploymeny of apps.
+        
+        The purpose of this demo is to showcase 1QBit's CME Market Sentiment Meter (MSM) – a curated dataset
+        that has many metrics suitable organized as a cleaned time-series, readily portable to your workflow.
+        One of the key features is the novel Anxiety metric, which is derived from a mixture distribution that
+        allows for multiple schools of thought. The MSM provides data for 8 futures markets (C, CL, EC, ES, GC,
+        NG, S, and TYF).
+        """
+    )
 
 dmCode = ["C","CL","EC","ES","GC","NG","S","TYF"]
 
@@ -56,10 +75,6 @@ dateRange = st.sidebar.date_input(label = dateSelectPrompt, value = [date(2012,1
 fileName = "data/1QBit_MSM_"+selectedFut
 
 pdf = pd.read_csv(fileName).drop([0,1]).reset_index(drop=True)
-
-st.subheader("raw data")
-
-st.write(pdf.head())
 
 # Trade Date
 dobList = []
@@ -93,6 +108,18 @@ productConflicted = []
 for row in range(len(pdf)):
     productConflicted.append(int(pdf[selectedFut+'_MIX_CONFLICTED'][row]))
 #endFor
+
+st.write(
+        """
+        ### Settlement Price and Anxiety Evolution
+        Click the sidebar and choose your product of interest, and a date range. From this, you can begin
+        to visually explore relationships between the MSM states and the settlement price for the most
+        active futures contract. Complacent corresponds to a narrow risk-return distribution, Balanced to
+        a slightly wider, more normal distribtion, Anxious to a wider distribution, and Conflicted to
+        a potentially bimodal distribution. Generally, the evolution of the states and the Anxiety can better
+        inform a trading strategy.
+        """
+    )
 
 
 # Plot ES and ES Market States
@@ -128,6 +155,15 @@ fig.update_layout(yaxis_range=spxAxisLimitDict[selectedFut],xaxis_range=dateRang
 
 st.plotly_chart(fig)
 
+
+st.write(
+        """
+        ### Mixture Risk–Return Distribution
+        Here, you can select the daily mixture distribution for a finer exploration of the Anxiety.
+        """
+    )
+
+
 def msmHist(tradeDate):
     msmInfoOneDate = pdf.loc[pdf[selectedFut+'_TRADEDATE'] == tradeDate]
     stateText = msmInfoOneDate[selectedFut+'_MIX_STATE'].tolist()[0]
@@ -141,8 +177,30 @@ def msmHist(tradeDate):
     st.plotly_chart(figHist)
 #endDef
 
+
+
 stateDate = st.date_input(label = "Pick a single date.", value = date(2020,4,8), min_value = date(2012,1,3) , max_value = date(2021,10,22))
 
 stateDate = int(stateDate.strftime('%Y%m%d'))
 
+st.write(
+        """
+        ### The Data Structure
+        To see all the possible metrics included in the CME Market Sentiment Meter Curated Data File,
+        you can see the below headings of the dataframe.
+        """
+    )
+
 msmHist(stateDate)
+
+
+st.subheader("raw data")
+
+st.write(pdf.head())
+
+st.write(
+        """
+        ### Learn More:
+        https://www.cmegroup.com/tools-information/market-sentiment-meter.html
+        """
+    )

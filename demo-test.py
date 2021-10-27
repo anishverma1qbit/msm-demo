@@ -183,6 +183,9 @@ stateDate = st.date_input(label = "Pick a single date.", value = date(2020,4,8),
 
 stateDate = int(stateDate.strftime('%Y%m%d'))
 
+
+msmHist(stateDate)
+
 st.write(
         """
         ### The Data Structure
@@ -190,11 +193,6 @@ st.write(
         you can see the below headings of the dataframe.
         """
     )
-
-msmHist(stateDate)
-
-
-st.subheader("raw data")
 
 st.write(pdf.head())
 
